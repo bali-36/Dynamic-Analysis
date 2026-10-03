@@ -1,0 +1,52 @@
+services:
+  android-emulator:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: caelus-emulator
+    privileged: true
+    devices:
+      - /dev/kvm
+    group_add:
+      - "991"
+    environment:
+      - WEB_VNC=true
+    shm_size: 2g
+    mem_limit: 4g
+    cpus: 2
+    ports:
+      - "6080:6080"
+    networks:
+      - caelus-internal
+      - caelus-public
+    restart: "no"
+    volumes:
+      - ./emulator-start.sh:/emulator-start.sh:ro
+    entrypoint: ["/bin/bash", "/emulator-start.sh"]
+
+  mobsf:
+    image: opensecurity/mobile-security-framework-mobsf:latest
+    container_name: caelus-mobsf
+    depends_on:
+      - android-emulator
+    environment:
+      - MOBSF_ANALYZER_IDENTIFIER=caelus-emulator:5556
+      - MOBSF_API_KEY=${MOBSF_API_KEY}
+    mem_limit: 2g
+    ports:
+      - "8000:8000"
+    networks:
+      - caelus-public
+      - caelus-internal
+    volumes:
+      - mobsf-data:/root/.MobSF
+    env_file:
+      - .env
+
+networks:
+  caelus-public:
+    driver: bridge
+  caelus-internal:
+    driver: bridge
+    internal: true
+
+volumes:
+  mobsf-data:
