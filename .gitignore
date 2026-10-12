@@ -1,3 +1,4 @@
 .env
 *.log
+frida-server*
 __pycache__/

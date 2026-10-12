@@ -9,6 +9,7 @@ services:
       - "991"
     environment:
       - WEB_VNC=true
+      - ENABLE_FRIDA=0
     shm_size: 2g
     mem_limit: 4g
     cpus: 2

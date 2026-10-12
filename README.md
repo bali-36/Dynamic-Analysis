@@ -128,3 +128,17 @@ API_KEY=$(grep MOBSF_API_KEY .env | cut -d= -f2)
 curl -F "file=@test.apk" -H "Authorization: $API_KEY" http://localhost:8000/api/v1/upload
 # returns a hash — use it for scan, then dynamic/start_analysis, etc.
 ```
+
+## Frida
+
+The emulator image already provides a working Frida server (`frida-ps -U` from
+the MobSF container lists device processes with no extra setup). Manual
+frida-server push is therefore OFF by default (`ENABLE_FRIDA=0`).
+
+If you ever enable it, the frida-server version MUST exactly match the `frida`
+Python package in the MobSF container (`docker exec caelus-mobsf pip show frida`).
+The binary is ~110MB, is gitignored, and adds ~3 minutes to every start.
+
+## Resetting between scans
+
+`./reset.sh` recreates everything for a clean emulator (no snapshots are used).
